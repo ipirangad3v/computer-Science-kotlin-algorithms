@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import searchalgorithms.binarySearch
 import searchalgorithms.linearSearch
 import searchalgorithms.ui.SearchType
@@ -33,6 +37,8 @@ fun main() = application {
     val list = listOf(1, 2, 3, 4, 5)
 
     Window(onCloseRequest = ::exitApplication) {
+
+        val coroutineScope = rememberCoroutineScope()
 
         var selectedSearchStyle by remember { mutableStateOf(SearchType.LINEAR) }
 
@@ -70,10 +76,12 @@ fun main() = application {
             Button(
                 onClick = {
                     searchTerm.text.let {
-                        resultString = if (it.isDigit()) {
-                            runSearch(list, it.toInt(), selectedSearchStyle)
-                        } else {
-                            "$it is not a valid number"
+                        coroutineScope.launch {
+                            resultString = if (it.isDigit()) {
+                                runSearch(list, it.toInt(), selectedSearchStyle)
+                            } else {
+                                "$it is not a valid number"
+                            }
                         }
                     }
 
