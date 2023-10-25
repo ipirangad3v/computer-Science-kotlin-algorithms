@@ -10,4 +10,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "leetcode-kotlin"
+rootProject.name = "computer-science-kotlin"
